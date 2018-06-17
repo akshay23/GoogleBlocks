@@ -53,7 +53,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Show statistics such as fps and timing information
         let scene = SCNScene()
-        sceneView.showsStatistics = true
         sceneView.scene = scene
         sceneView.antialiasingMode = .multisampling4X
         
@@ -77,6 +76,16 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Specificy supported orientations
         recorder?.inputViewOrientations = [.portrait, .landscapeLeft, .landscapeRight]
+        
+        // Single tap gesture
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapped))
+        sceneView.addGestureRecognizer(tapGesture)
+        
+        // Long press gesture
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longPress))
+        longPressGesture.minimumPressDuration = 0.5
+        sceneView.addGestureRecognizer(longPressGesture)
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -103,11 +112,22 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         recorder?.rest()
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        let location = touches.first!.location(in: sceneView)
+    func getParent(_ nodeFound: SCNNode?) -> SCNNode? {
+        if let node = nodeFound {
+            if node.name == "camp" {
+                return node
+            } else if let parent = node.parent {
+                return getParent(parent)
+            }
+        }
+        return nil
+    }
+    
+    @objc func tapped(recognizer: UITapGestureRecognizer) {
+        let location = recognizer.location(in: sceneView)
         var hitTestOptions = [SCNHitTestOption: Any]()
         hitTestOptions[SCNHitTestOption.boundingBoxOnly] = true
-        
+
         let hitResults: [SCNHitTestResult] = sceneView.hitTest(location, options: hitTestOptions)
         if let hit = hitResults.first {
             if let node = getParent(hit.node) {
@@ -115,7 +135,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 return
             }
         }
-        
+
         let planeHitTest = sceneView.hitTest(location, types: .existingPlaneUsingExtent)
         if !planeHitTest.isEmpty, let result = planeHitTest.first {
             let farmNode = farmScene.rootNode.childNode(withName: "camp", recursively: true)
@@ -131,15 +151,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         }
     }
     
-    func getParent(_ nodeFound: SCNNode?) -> SCNNode? {
-        if let node = nodeFound {
-            if node.name == "camp" {
-                return node
-            } else if let parent = node.parent {
-                return getParent(parent)
-            }
-        }
-        return nil
+    @objc func longPress(recognizer: UILongPressGestureRecognizer) {
+        
     }
     
     // Record and stop method
