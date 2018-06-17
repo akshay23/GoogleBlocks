@@ -18,6 +18,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     var nodeModel: SCNNode!
     var recorder: RecordAR?
     
+    let farmScene = SCNScene(named: "camp.dae")!
+    
     var recorderButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Record", for: .normal)
@@ -59,7 +61,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.automaticallyUpdatesLighting = true
         sceneView.autoenablesDefaultLighting = true
         
-        let farmScene = SCNScene(named: "camp.dae")!
+        // Initiate farm node
         nodeModel = farmScene.rootNode.childNode(withName: "camp", recursively: true)
         
         // Add buttons
@@ -116,7 +118,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         let planeHitTest = sceneView.hitTest(location, types: .existingPlaneUsingExtent)
         if !planeHitTest.isEmpty, let result = planeHitTest.first {
-            let farmScene = SCNScene(named: "camp.dae")!
             let farmNode = farmScene.rootNode.childNode(withName: "camp", recursively: true)
             farmNode!.position = SCNVector3(result.worldTransform.columns.3.x,
                                             result.worldTransform.columns.3.y,
@@ -171,13 +172,12 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         }
     }
     
+    // Add node to anchor point
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         if !anchor.isKind(of: ARPlaneAnchor.self) {
             DispatchQueue.main.async {
                 let modelClone = self.nodeModel.clone()
                 modelClone.position = SCNVector3Zero
-                
-                // Add model as a child of the node
                 node.addChildNode(modelClone)
             }
         }
