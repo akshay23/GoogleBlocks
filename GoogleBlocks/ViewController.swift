@@ -97,6 +97,10 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         doubleTapGesuture.numberOfTapsRequired = 2
         sceneView.addGestureRecognizer(doubleTapGesuture)
         tapGesture.require(toFail: doubleTapGesuture)
+        
+        // Pinch gesture
+        let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinched))
+        sceneView.addGestureRecognizer(pinchGesture)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -196,6 +200,23 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             let hitResultsFeaturePoints: [ARHitTestResult] = sceneView.hitTest(location, types: .featurePoint)
             if let hit = hitResultsFeaturePoints.first {
                 sceneView.session.add(anchor: ARAnchor(transform: hit.worldTransform))
+            }
+        }
+    }
+    
+    @objc func pinched(recognizer: UIPinchGestureRecognizer) {
+        if recognizer.state == .changed {
+            guard let sceneView = recognizer.view as? ARSCNView else { return }
+            
+            let location = recognizer.location(in: sceneView)
+            let hitResults = sceneView.hitTest(location, options: nil)
+            if let result = hitResults.first, let node = result.node.parent {
+                let pinchScaleX = Float(recognizer.scale) * node.scale.x
+                let pinchScaleY = Float(recognizer.scale) * node.scale.y
+                let pinchScaleZ = Float(recognizer.scale) * node.scale.z
+                
+                node.scale = SCNVector3(pinchScaleX, pinchScaleY, pinchScaleZ)
+                recognizer.scale = 1
             }
         }
     }
