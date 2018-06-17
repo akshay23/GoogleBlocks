@@ -39,6 +39,12 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Export AR Media</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Export AR Media</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Audiovisual Recording</string>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

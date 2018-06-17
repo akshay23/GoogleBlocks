@@ -6,6 +6,7 @@
 //  Copyright © 2017 Mohammad Azam. All rights reserved.
 //
 
+import ARVideoKit
 import UIKit
 
 @UIApplicationMain
@@ -42,5 +43,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        return ViewAR.orientation
+    }
 }
 
