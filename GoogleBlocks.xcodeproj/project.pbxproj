@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		19A7778420D58869001D3569 /* camp.dae in Resources */ = {isa = PBXBuildFile; fileRef = 19A7778320D58869001D3569 /* camp.dae */; };
-		19A7778720D6991E001D3569 /* ARVideoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19A7778620D6991E001D3569 /* ARVideoKit.framework */; };
 		19A7778820D69B2F001D3569 /* ARVideoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19A7778620D6991E001D3569 /* ARVideoKit.framework */; };
 		19A7778920D69B2F001D3569 /* ARVideoKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 19A7778620D6991E001D3569 /* ARVideoKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		19E2B14420D6D49D0076011C /* tavern.dae in Resources */ = {isa = PBXBuildFile; fileRef = 19E2B14320D6D49C0076011C /* tavern.dae */; };
 		34C275451F98FBA2004649BA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C275441F98FBA2004649BA /* AppDelegate.swift */; };
 		34C275471F98FBA2004649BA /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 34C275461F98FBA2004649BA /* art.scnassets */; };
 		34C275491F98FBA2004649BA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C275481F98FBA2004649BA /* ViewController.swift */; };
@@ -36,6 +36,7 @@
 /* Begin PBXFileReference section */
 		19A7778320D58869001D3569 /* camp.dae */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml.dae; path = camp.dae; sourceTree = "<group>"; };
 		19A7778620D6991E001D3569 /* ARVideoKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ARVideoKit.framework; sourceTree = "<group>"; };
+		19E2B14320D6D49C0076011C /* tavern.dae */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml.dae; path = tavern.dae; sourceTree = "<group>"; };
 		34C275411F98FBA2004649BA /* GoogleBlocks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoogleBlocks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		34C275441F98FBA2004649BA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		34C275461F98FBA2004649BA /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
@@ -52,7 +53,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				19A7778820D69B2F001D3569 /* ARVideoKit.framework in Frameworks */,
-				19A7778720D6991E001D3569 /* ARVideoKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -88,6 +88,7 @@
 			isa = PBXGroup;
 			children = (
 				19A7778320D58869001D3569 /* camp.dae */,
+				19E2B14320D6D49C0076011C /* tavern.dae */,
 				34C275441F98FBA2004649BA /* AppDelegate.swift */,
 				34C275461F98FBA2004649BA /* art.scnassets */,
 				34C275481F98FBA2004649BA /* ViewController.swift */,
@@ -127,7 +128,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0900;
-				LastUpgradeCheck = 0900;
+				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = "Mohammad Azam";
 				TargetAttributes = {
 					34C275401F98FBA2004649BA = {
@@ -159,6 +160,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				19E2B14420D6D49D0076011C /* tavern.dae in Resources */,
 				34C275471F98FBA2004649BA /* art.scnassets in Resources */,
 				34C275511F98FBA2004649BA /* LaunchScreen.storyboard in Resources */,
 				34C2754E1F98FBA2004649BA /* Assets.xcassets in Resources */,
@@ -215,6 +217,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -222,6 +225,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -272,6 +276,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -279,6 +284,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;

@@ -15,10 +15,13 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     @IBOutlet var sceneView: ARSCNView!
     
-    var nodeModel: SCNNode!
+    var shouldUseCamp = true
+    var tavernModel: SCNNode!
+    var campModel: SCNNode!
     var recorder: RecordAR?
     
     let farmScene = SCNScene(named: "camp.dae")!
+    let tavernScene = SCNScene(named: "tavern.dae")!
     
     var recorderButton: UIButton = {
         let button = UIButton(type: .system)
@@ -60,8 +63,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.automaticallyUpdatesLighting = true
         sceneView.autoenablesDefaultLighting = true
         
-        // Initiate farm node
-        nodeModel = farmScene.rootNode.childNode(withName: "camp", recursively: true)
+        // Init models
+        campModel = farmScene.rootNode.childNode(withName: "camp", recursively: true)
+        tavernModel = tavernScene.rootNode.childNode(withName: "tavern", recursively: true)
         
         // Add buttons
         view.addSubview(recorderButton)
@@ -79,13 +83,20 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Single tap gesture
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapped))
+        tapGesture.numberOfTapsRequired = 1
         sceneView.addGestureRecognizer(tapGesture)
         
         // Long press gesture
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longPress))
         longPressGesture.minimumPressDuration = 0.5
         sceneView.addGestureRecognizer(longPressGesture)
+        tapGesture.require(toFail: longPressGesture)
         
+        // Double tap gesture
+        let doubleTapGesuture = UITapGestureRecognizer(target: self, action: #selector(doubleTap))
+        doubleTapGesuture.numberOfTapsRequired = 2
+        sceneView.addGestureRecognizer(doubleTapGesuture)
+        tapGesture.require(toFail: doubleTapGesuture)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -114,7 +125,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     func getParent(_ nodeFound: SCNNode?) -> SCNNode? {
         if let node = nodeFound {
-            if node.name == "camp" {
+            if node.name == "camp" || node.name == "tavern" {
                 return node
             } else if let parent = node.parent {
                 return getParent(parent)
@@ -127,6 +138,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let location = recognizer.location(in: sceneView)
         var hitTestOptions = [SCNHitTestOption: Any]()
         hitTestOptions[SCNHitTestOption.boundingBoxOnly] = true
+        shouldUseCamp = true
 
         let hitResults: [SCNHitTestResult] = sceneView.hitTest(location, options: hitTestOptions)
         if let hit = hitResults.first {
@@ -137,12 +149,13 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         }
 
         let planeHitTest = sceneView.hitTest(location, types: .existingPlaneUsingExtent)
-        if !planeHitTest.isEmpty, let result = planeHitTest.first {
-            let farmNode = farmScene.rootNode.childNode(withName: "camp", recursively: true)
-            farmNode!.position = SCNVector3(result.worldTransform.columns.3.x,
+        if !planeHitTest.isEmpty,
+            let result = planeHitTest.first,
+            let farmNode = farmScene.rootNode.childNode(withName: "camp", recursively: true) {
+            farmNode.position = SCNVector3(result.worldTransform.columns.3.x,
                                             result.worldTransform.columns.3.y,
                                             result.worldTransform.columns.3.z)
-            sceneView.scene.rootNode.addChildNode(farmNode!)
+            sceneView.scene.rootNode.addChildNode(farmNode)
         } else {
             let hitResultsFeaturePoints: [ARHitTestResult] = sceneView.hitTest(location, types: .featurePoint)
             if let hit = hitResultsFeaturePoints.first {
@@ -152,7 +165,39 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
     
     @objc func longPress(recognizer: UILongPressGestureRecognizer) {
+        if recognizer.state == .ended {
+            print("long press")
+        }
+    }
+    
+    @objc func doubleTap(recognizer: UILongPressGestureRecognizer) {
+        let location = recognizer.location(in: sceneView)
+        var hitTestOptions = [SCNHitTestOption: Any]()
+        hitTestOptions[SCNHitTestOption.boundingBoxOnly] = true
+        shouldUseCamp = false
         
+        let hitResults: [SCNHitTestResult] = sceneView.hitTest(location, options: hitTestOptions)
+        if let hit = hitResults.first {
+            if let node = getParent(hit.node) {
+                node.removeFromParentNode()
+                return
+            }
+        }
+        
+        let planeHitTest = sceneView.hitTest(location, types: .existingPlaneUsingExtent)
+        if !planeHitTest.isEmpty,
+            let result = planeHitTest.first,
+            let tavernNode = tavernScene.rootNode.childNode(withName: "tavern", recursively: true) {
+            tavernNode.position = SCNVector3(result.worldTransform.columns.3.x,
+                                             result.worldTransform.columns.3.y,
+                                             result.worldTransform.columns.3.z)
+            sceneView.scene.rootNode.addChildNode(tavernNode)
+        } else {
+            let hitResultsFeaturePoints: [ARHitTestResult] = sceneView.hitTest(location, types: .featurePoint)
+            if let hit = hitResultsFeaturePoints.first {
+                sceneView.session.add(anchor: ARAnchor(transform: hit.worldTransform))
+            }
+        }
     }
     
     // Record and stop method
@@ -188,8 +233,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     // Add node to anchor point
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         if !anchor.isKind(of: ARPlaneAnchor.self) {
-            DispatchQueue.main.async {
-                let modelClone = self.nodeModel.clone()
+            DispatchQueue.main.async { [weak self] in
+                guard let strongSelf = self else { return }
+                let modelClone = strongSelf.shouldUseCamp ? strongSelf.campModel.clone() : strongSelf.tavernModel.clone()
                 modelClone.position = SCNVector3Zero
                 node.addChildNode(modelClone)
             }
