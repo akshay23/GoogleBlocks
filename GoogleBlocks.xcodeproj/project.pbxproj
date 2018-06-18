@@ -11,6 +11,7 @@
 		19A7778820D69B2F001D3569 /* ARVideoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19A7778620D6991E001D3569 /* ARVideoKit.framework */; };
 		19A7778920D69B2F001D3569 /* ARVideoKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 19A7778620D6991E001D3569 /* ARVideoKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		19E2B14420D6D49D0076011C /* tavern.dae in Resources */ = {isa = PBXBuildFile; fileRef = 19E2B14320D6D49C0076011C /* tavern.dae */; };
+		19E2B14620D7440F0076011C /* TimmyTop10.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 19E2B14520D7440A0076011C /* TimmyTop10.mp4 */; };
 		34C275451F98FBA2004649BA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C275441F98FBA2004649BA /* AppDelegate.swift */; };
 		34C275471F98FBA2004649BA /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 34C275461F98FBA2004649BA /* art.scnassets */; };
 		34C275491F98FBA2004649BA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C275481F98FBA2004649BA /* ViewController.swift */; };
@@ -37,6 +38,7 @@
 		19A7778320D58869001D3569 /* camp.dae */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml.dae; path = camp.dae; sourceTree = "<group>"; };
 		19A7778620D6991E001D3569 /* ARVideoKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ARVideoKit.framework; sourceTree = "<group>"; };
 		19E2B14320D6D49C0076011C /* tavern.dae */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml.dae; path = tavern.dae; sourceTree = "<group>"; };
+		19E2B14520D7440A0076011C /* TimmyTop10.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = TimmyTop10.mp4; sourceTree = "<group>"; };
 		34C275411F98FBA2004649BA /* GoogleBlocks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoogleBlocks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		34C275441F98FBA2004649BA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		34C275461F98FBA2004649BA /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
@@ -96,6 +98,7 @@
 				34C2754D1F98FBA2004649BA /* Assets.xcassets */,
 				34C2754F1F98FBA2004649BA /* LaunchScreen.storyboard */,
 				34C275521F98FBA2004649BA /* Info.plist */,
+				19E2B14520D7440A0076011C /* TimmyTop10.mp4 */,
 			);
 			path = GoogleBlocks;
 			sourceTree = "<group>";
@@ -164,6 +167,7 @@
 				34C275471F98FBA2004649BA /* art.scnassets in Resources */,
 				34C275511F98FBA2004649BA /* LaunchScreen.storyboard in Resources */,
 				34C2754E1F98FBA2004649BA /* Assets.xcassets in Resources */,
+				19E2B14620D7440F0076011C /* TimmyTop10.mp4 in Resources */,
 				19A7778420D58869001D3569 /* camp.dae in Resources */,
 				34C2754C1F98FBA2004649BA /* Main.storyboard in Resources */,
 			);

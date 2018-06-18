@@ -101,6 +101,12 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.addGestureRecognizer(doubleTapGesuture)
         tapGesture.require(toFail: doubleTapGesuture)
         
+        // Triple tap gesture
+        let tripleTapGesuture = UITapGestureRecognizer(target: self, action: #selector(tripleTap))
+        tripleTapGesuture.numberOfTapsRequired = 3
+        sceneView.addGestureRecognizer(tripleTapGesuture)
+        tapGesture.require(toFail: tripleTapGesuture)
+        
         // Pinch gesture
         let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinched))
         sceneView.addGestureRecognizer(pinchGesture)
@@ -183,7 +189,29 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     @objc func longPress(recognizer: UILongPressGestureRecognizer) {
         if recognizer.state == .ended {
-            print("long press")
+            guard let currentFrame = sceneView.session.currentFrame else { return }
+            
+            let videoNode = SKVideoNode(fileNamed: "TimmyTop10.mp4")
+            videoNode.play()
+            
+            let skScene = SKScene(size: CGSize(width: 640, height: 480))
+            skScene.addChild(videoNode)
+            
+            videoNode.position = CGPoint(x: skScene.size.width/2, y: skScene.size.height/2)
+            videoNode.size = skScene.size
+            
+            let tvPlane = SCNPlane(width: 1.0, height: 0.75)
+            tvPlane.firstMaterial?.diffuse.contents = skScene
+            tvPlane.firstMaterial?.isDoubleSided = true
+            
+            let tvPlaneNode = SCNNode(geometry: tvPlane)
+            var translation = matrix_identity_float4x4
+            translation.columns.3.z = -1.0
+            
+            tvPlaneNode.simdTransform = matrix_multiply(currentFrame.camera.transform, translation)
+            tvPlaneNode.eulerAngles = SCNVector3(Double.pi, 0, 0)
+            
+            sceneView.scene.rootNode.addChildNode(tvPlaneNode)
         }
     }
     
@@ -215,6 +243,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 sceneView.session.add(anchor: ARAnchor(transform: hit.worldTransform))
             }
         }
+    }
+    
+    @objc func tripleTap(recognizer: UILongPressGestureRecognizer) {
     }
     
     @objc func pinched(recognizer: UIPinchGestureRecognizer) {
