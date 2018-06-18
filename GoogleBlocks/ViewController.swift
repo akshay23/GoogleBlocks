@@ -26,6 +26,11 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     let farmScene = SCNScene(named: "camp.dae")!
     let tavernScene = SCNScene(named: "tavern.dae")!
     
+    var randomEmoji: String {
+        let emojis = ["🤓", "🔥", "😜", "😇", "🤣", "🤗", "🧐", "🐰", "🚀", "👻"]
+        return emojis[Int(arc4random_uniform(UInt32(emojis.count)))]
+    }
+    
     var recorderButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Record", for: .normal)
@@ -106,6 +111,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         tripleTapGesuture.numberOfTapsRequired = 3
         sceneView.addGestureRecognizer(tripleTapGesuture)
         tapGesture.require(toFail: tripleTapGesuture)
+        doubleTapGesuture.require(toFail: tripleTapGesuture)
         
         // Pinch gesture
         let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinched))
@@ -145,10 +151,10 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // End recorder session
         recorder?.rest()
     }
-    
+
     func getParent(_ nodeFound: SCNNode?) -> SCNNode? {
         if let node = nodeFound {
-            if node.name == "camp" || node.name == "tavern" {
+            if node.name == "camp" || node.name == "tavern" || node.name == "emoji" || node.name == "timmy" {
                 return node
             } else if let parent = node.parent {
                 return getParent(parent)
@@ -208,6 +214,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             var translation = matrix_identity_float4x4
             translation.columns.3.z = -1.0
             
+            tvPlaneNode.name = "timmy"
             tvPlaneNode.simdTransform = matrix_multiply(currentFrame.camera.transform, translation)
             tvPlaneNode.eulerAngles = SCNVector3(Double.pi, 0, 0)
             
@@ -215,7 +222,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         }
     }
     
-    @objc func doubleTap(recognizer: UILongPressGestureRecognizer) {
+    @objc func doubleTap(recognizer: UITapGestureRecognizer) {
         let location = recognizer.location(in: sceneView)
         var hitTestOptions = [SCNHitTestOption: Any]()
         hitTestOptions[SCNHitTestOption.boundingBoxOnly] = true
@@ -245,7 +252,31 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         }
     }
     
-    @objc func tripleTap(recognizer: UILongPressGestureRecognizer) {
+    @objc func tripleTap(recognizer: UITapGestureRecognizer) {
+        guard recognizer.state == .ended else { return }
+        guard let currentFrame = sceneView.session.currentFrame else { return }
+        
+        let emojiNode = SKLabelNode(text: randomEmoji)
+        emojiNode.horizontalAlignmentMode = .center
+        emojiNode.verticalAlignmentMode = .center
+        
+        let skScene = SKScene(size: CGSize(width: 60, height: 60))
+        skScene.addChild(emojiNode)
+        emojiNode.position = CGPoint(x: skScene.size.width/2, y: skScene.size.height/2)
+        
+        let emojiPlane = SCNPlane(width: 0.5, height: 0.5)
+        emojiPlane.firstMaterial?.diffuse.contents = skScene
+        emojiPlane.firstMaterial?.isDoubleSided = true
+        
+        let emojiPlaneNode = SCNNode(geometry: emojiPlane)
+        var translation = matrix_identity_float4x4
+        translation.columns.3.z = -1.0
+        
+        emojiPlaneNode.name = "emoji"
+        emojiPlaneNode.simdTransform = matrix_multiply(currentFrame.camera.transform, translation)
+        emojiPlaneNode.eulerAngles = SCNVector3(Double.pi, 0, 0)
+        
+        sceneView.scene.rootNode.addChildNode(emojiPlaneNode)
     }
     
     @objc func pinched(recognizer: UIPinchGestureRecognizer) {
