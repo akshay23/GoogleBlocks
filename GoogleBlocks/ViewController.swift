@@ -260,6 +260,22 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         emojiNode.horizontalAlignmentMode = .center
         emojiNode.verticalAlignmentMode = .center
         
+        // Animate node
+        emojiNode.run(.sequence([
+            .repeatForever(.sequence([
+                // A group of actions get performed simultaneously
+                .group([
+                    .sequence([
+                        .scale(to: 1.5, duration: 0.3),
+                        .scale(to: 1, duration: 0.3)
+                        ]),
+                    // Rotate by 360 degrees (pi * 2 in radians)
+                    .rotate(byAngle: .pi * 2, duration: 0.6)
+                    ]),
+                .wait(forDuration: 2)
+                ]))
+        ]))
+        
         let skScene = SKScene(size: CGSize(width: 60, height: 60))
         skScene.addChild(emojiNode)
         emojiNode.position = CGPoint(x: skScene.size.width/2, y: skScene.size.height/2)
