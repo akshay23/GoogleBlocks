@@ -20,6 +20,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     var campModel: SCNNode!
     var recorder: RecordAR?
     
+    private var originalRotation: SCNVector3?
+    private var selectedNode: SCNNode?
+    
     let farmScene = SCNScene(named: "camp.dae")!
     let tavernScene = SCNScene(named: "tavern.dae")!
     
@@ -101,6 +104,16 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Pinch gesture
         let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinched))
         sceneView.addGestureRecognizer(pinchGesture)
+        
+        // Pan gesture
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(panned))
+        sceneView.addGestureRecognizer(panGesture)
+        tapGesture.require(toFail: panGesture)
+        
+        // Rotate gesutre
+        let rotateGesture = UIRotationGestureRecognizer(target: self, action: #selector(rotate))
+        sceneView.addGestureRecognizer(rotateGesture)
+        tapGesture.require(toFail: doubleTapGesuture)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -210,6 +223,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             
             let location = recognizer.location(in: sceneView)
             let hitResults = sceneView.hitTest(location, options: nil)
+            
             if let result = hitResults.first, let node = result.node.parent {
                 let pinchScaleX = Float(recognizer.scale) * node.scale.x
                 let pinchScaleY = Float(recognizer.scale) * node.scale.y
@@ -218,6 +232,45 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 node.scale = SCNVector3(pinchScaleX, pinchScaleY, pinchScaleZ)
                 recognizer.scale = 1
             }
+        }
+    }
+    
+    @objc func rotate(recognizer: UIRotationGestureRecognizer) {
+        guard let sceneView = recognizer.view as? ARSCNView else { return }
+        
+        let location = recognizer.location(in: sceneView)
+        let hitResults = sceneView.hitTest(location, options: nil)
+        
+        guard let result = hitResults.first, let node = result.node.parent else { return }
+        
+        if recognizer.state == .began {
+            originalRotation = node.eulerAngles
+        } else if recognizer.state == .changed {
+            guard var originalRotation = originalRotation else { return }
+            originalRotation.y -= Float(recognizer.rotation)
+            node.eulerAngles = originalRotation
+        } else {
+            originalRotation = nil
+        }
+    }
+    
+    @objc func panned(recognizer: UIPanGestureRecognizer) {
+        guard let sceneView = recognizer.view as? ARSCNView else { return }
+        
+        let location = recognizer.location(in: sceneView)
+        let hitResults = sceneView.hitTest(location, options: nil)
+        
+        guard let result = hitResults.first else { return }
+        
+        if recognizer.state == .began {
+            selectedNode = result.node.parent
+        } else if recognizer.state == .changed {
+            guard let result = sceneView.hitTest(location, types: .existingPlane).first else { return }
+            let transform = result.worldTransform
+            let newPosition = float3(transform.columns.3.x, transform.columns.3.y, transform.columns.3.z)
+            selectedNode?.simdPosition = newPosition
+        } else {
+            selectedNode = nil
         }
     }
     
