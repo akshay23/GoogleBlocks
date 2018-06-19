@@ -201,6 +201,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             videoNode.play()
             
             let skScene = SKScene(size: CGSize(width: 640, height: 480))
+            skScene.scaleMode = .aspectFit
             skScene.addChild(videoNode)
             
             videoNode.position = CGPoint(x: skScene.size.width/2, y: skScene.size.height/2)
@@ -217,6 +218,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             tvPlaneNode.name = "timmy"
             tvPlaneNode.simdTransform = matrix_multiply(currentFrame.camera.transform, translation)
             tvPlaneNode.eulerAngles = SCNVector3(Double.pi, 0, 0)
+            //tvPlaneNode.position = SCNVector3(x: 0, y: 0, z: 1.0)
             
             sceneView.scene.rootNode.addChildNode(tvPlaneNode)
         }
@@ -302,7 +304,12 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             let location = recognizer.location(in: sceneView)
             let hitResults = sceneView.hitTest(location, options: nil)
             
-            if let result = hitResults.first, let node = result.node.parent {
+            var node = hitResults.first?.node.parent
+            if node == nil || hitResults.first?.node.name == "timmy" {
+                node = hitResults.first?.node
+            }
+            
+            if let node = node {
                 let pinchScaleX = Float(recognizer.scale) * node.scale.x
                 let pinchScaleY = Float(recognizer.scale) * node.scale.y
                 let pinchScaleZ = Float(recognizer.scale) * node.scale.z
@@ -319,14 +326,19 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let location = recognizer.location(in: sceneView)
         let hitResults = sceneView.hitTest(location, options: nil)
         
-        guard let result = hitResults.first, let node = result.node.parent else { return }
+        var node = hitResults.first?.node.parent
+        if node == nil || hitResults.first?.node.name == "timmy" {
+            node = hitResults.first?.node
+        }
+        
+        guard let mainNode = node else { return }
         
         if recognizer.state == .began {
-            originalRotation = node.eulerAngles
+            originalRotation = mainNode.eulerAngles
         } else if recognizer.state == .changed {
             guard var originalRotation = originalRotation else { return }
             originalRotation.y -= Float(recognizer.rotation)
-            node.eulerAngles = originalRotation
+            mainNode.eulerAngles = originalRotation
         } else {
             originalRotation = nil
         }
